@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://cpph886pikdwx"]
+
+[ext_resource type="Script" uid="uid://mygbyat2jyna" path="res://menu_inicio.gd" id="1_cxoyd"]
+[ext_resource type="Texture2D" uid="uid://uroxk5a7myei" path="res://assets/interactuables/inicio.png" id="1_wkv36"]
+[ext_resource type="Texture2D" uid="uid://dvfeluicx21e1" path="res://assets/interactuables/nueva_partida.png" id="2_aqwrv"]
+[ext_resource type="Texture2D" uid="uid://du5f0ghyixwbi" path="res://assets/interactuables/nueva_partida_hover.png" id="3_cxoyd"]
+[ext_resource type="AudioStream" uid="uid://b1rruetp4xrks" path="res://assets/audio/sonido_gravedad.mp3" id="5_kt2nm"]
+[ext_resource type="AudioStream" uid="uid://bciaa6njy1foy" path="res://assets/audio/The Battle Cats - Intro Theme.mp3" id="6_w0mag"]
+
+[node name="menu_inicio" type="Node2D" unique_id=1521720298]
+script = ExtResource("1_cxoyd")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1086226246]
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer" unique_id=448702647]
+visible = false
+offset_left = -100.0
+offset_top = -62.0
+offset_right = 1249.0
+offset_bottom = 700.0
+color = Color(0, 0, 0, 1)
+
+[node name="Inicio" type="Sprite2D" parent="." unique_id=1757871020]
+texture_filter = 1
+position = Vector2(577, 326)
+scale = Vector2(0.93070364, 0.95703125)
+texture = ExtResource("1_wkv36")
+
+[node name="Button" type="Button" parent="Inicio" unique_id=1668396051]
+texture_filter = 1
+offset_left = -284.0
+offset_top = 162.0
+offset_right = 337.0
+offset_bottom = 280.0
+action_mode = 0
+icon = ExtResource("2_aqwrv")
+
+[node name="NuevaPartidaHover" type="Sprite2D" parent="Inicio" unique_id=1541974095]
+visible = false
+texture_filter = 1
+position = Vector2(21, 218)
+texture = ExtResource("3_cxoyd")
+
+[node name="SonidoGravedad" type="AudioStreamPlayer" parent="." unique_id=1007629499]
+stream = ExtResource("5_kt2nm")
+
+[node name="TheBattleCatsIntroTheme" type="AudioStreamPlayer" parent="." unique_id=480764602]
+stream = ExtResource("6_w0mag")
+autoplay = true
+
+[connection signal="pressed" from="Inicio/Button" to="." method="_on_button_pressed"]

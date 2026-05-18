@@ -1,0 +1,376 @@
+[gd_scene format=3 uid="uid://bokl2jaxvqh3m"]
+
+[ext_resource type="Texture2D" uid="uid://b467kq1li2027" path="res://assets/fondo-jugable/fondo-planetas.png" id="1_216fp"]
+[ext_resource type="Texture2D" uid="uid://caycp2myi0i03" path="res://assets/fondo-jugable/nave-fondoblanco.png" id="2_83tkt"]
+[ext_resource type="Texture2D" uid="uid://c4fvv3hndor3q" path="res://assets/fondo-jugable/nave-morado-fondoblanco.png" id="3_i75m5"]
+[ext_resource type="Texture2D" uid="uid://dtxou81bbvvqf" path="res://assets/personaje/idle.png" id="4_i75m5"]
+[ext_resource type="AudioStream" uid="uid://b1rruetp4xrks" path="res://assets/audio/sonido_gravedad.mp3" id="4_tccfi"]
+[ext_resource type="Texture2D" uid="uid://bw6o2g3l1pgcn" path="res://assets/fondo-jugable/transición_niebla.png" id="4_ucpyl"]
+[ext_resource type="AudioStream" uid="uid://cep8r14e47k3y" path="res://assets/audio/soundtrack_playing.mp3" id="7_ccs8d"]
+
+[sub_resource type="GDScript" id="GDScript_mxyds"]
+script/source = "extends Node2D
+
+const VELOCIDAD = 6.7
+const DISTANCIA = 200.0
+
+var direccion := 1.0
+var pos_inicio : float
+
+func _ready() -> void:
+	pos_inicio = position.x
+
+func _process(delta: float) -> void:
+	position.x += VELOCIDAD * direccion * delta
+
+	# Al llegar al límite, invertir dirección
+	if position.x >= pos_inicio + DISTANCIA:
+		direccion = -1.0
+	elif position.x <= pos_inicio - DISTANCIA:
+		direccion = 1.0
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_i75m5"]
+size = Vector2(894.71606, 146.72552)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ucpyl"]
+size = Vector2(239.72952, 156.04152)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ccs8d"]
+size = Vector2(288.8761, 156.79114)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yd1p6"]
+size = Vector2(826.2219, 136.47809)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mxyds"]
+size = Vector2(120.5, 339)
+
+[sub_resource type="GDScript" id="GDScript_i75m5"]
+script/source = "extends CharacterBody2D
+
+const SPEED = 150.0
+const GRAVEDAD_TIERRA = 450.0
+const GRAVEDAD_LUNA = 100.0
+const JUMP_VELOCITY = -250.0
+const IMPULSO_GRAVEDAD = -120.0
+const COOLDOWN_TIEMPO = 3.0
+
+var gravity_inverted := false
+var float_mode := false
+var cooldown_restante := 0.0
+
+@onready var anim: AnimatedSprite2D = $AnimatedSprite2D
+@onready var nave: Node = get_node(\"/root/Node2D/StaticBody2D/Nave\")
+@onready var nave_morado: Node = get_node(\"/root/Node2D/StaticBody2D/NaveMorado\")
+@onready var niebla: AnimatedSprite2D = get_node(\"/root/Node2D/CanvasLayer/Control/Niebla_gravedad-efecto\")
+@onready var barra: ColorRect = get_node(\"/root/Node2D/CanvasLayer/Control/ColorRect2\")
+@onready var barra_ancho_total: float = barra.size.x
+@onready var sonido_gravedad: AudioStreamPlayer = $SonidoGravedad
+
+func _ready() -> void:
+	nave.visible = true
+	nave_morado.visible = false
+	niebla.modulate.a = 0.0
+	niebla.visible = true
+
+func _physics_process(delta: float) -> void:
+	if cooldown_restante > 0.0:
+		cooldown_restante -= delta
+		cooldown_restante = max(cooldown_restante, 0.0)
+		var progreso := 1.0 - (cooldown_restante / COOLDOWN_TIEMPO)
+		barra.size.x = barra_ancho_total * progreso
+	else:
+		barra.size.x = barra_ancho_total
+
+	if gravity_inverted:
+		velocity.y -= GRAVEDAD_LUNA * delta
+	else:
+		velocity.y += GRAVEDAD_TIERRA * delta
+
+	if Input.is_action_just_pressed(\"ui_select\") and cooldown_restante <= 0.0:
+		sonido_gravedad.play()
+		gravity_inverted = not gravity_inverted
+		float_mode = true
+		anim.rotation_degrees = 180 if gravity_inverted else 0
+		if gravity_inverted:
+			velocity.y = IMPULSO_GRAVEDAD
+		else:
+			velocity.y = 0
+		cooldown_restante = COOLDOWN_TIEMPO
+		_hacer_efecto_niebla()
+
+	if not gravity_inverted:
+		if Input.is_action_just_pressed(\"move_up\") and is_on_floor():
+			velocity.y = JUMP_VELOCITY
+
+	var direction := Input.get_axis(\"move_left\", \"move_right\")
+	if direction != 0:
+		velocity.x = direction * SPEED
+		anim.flip_h = (direction < 0) != gravity_inverted
+		if not float_mode:
+			if anim.animation != \"walk\":
+				anim.play(\"walk\")
+	else:
+		velocity.x = move_toward(velocity.x, 0, SPEED)
+		if not float_mode:
+			if anim.animation != \"idle\":
+				anim.play(\"idle\")
+
+	if float_mode:
+		if anim.animation != \"float\":
+			anim.play(\"float\")
+		if gravity_inverted and is_on_ceiling():
+			float_mode = false
+			anim.play(\"idle\")
+		elif not gravity_inverted and is_on_floor():
+			float_mode = false
+			anim.play(\"idle\")
+
+	move_and_slide()
+
+func _hacer_efecto_niebla() -> void:
+	niebla.modulate.a = 0.0
+	niebla.play(\"gravity_change_effect\")
+	var tween := create_tween()
+	tween.tween_property(niebla, \"modulate:a\", 1.0, 0.25)
+	tween.tween_callback(_cambiar_fondo)
+	tween.tween_property(niebla, \"modulate:a\", 0.0, 0.25)
+
+func _cambiar_fondo() -> void:
+	nave.visible = not gravity_inverted
+	nave_morado.visible = gravity_inverted
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tccfi"]
+size = Vector2(35.1875, 55)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i75m5"]
+atlas = ExtResource("4_i75m5")
+region = Rect2(112, 246, 112, 123)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0ftk4"]
+atlas = ExtResource("4_i75m5")
+region = Rect2(224, 246, 112, 123)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4w372"]
+atlas = ExtResource("4_i75m5")
+region = Rect2(336, 246, 112, 123)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ucpyl"]
+atlas = ExtResource("4_i75m5")
+region = Rect2(0, 0, 105, 123)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tccfi"]
+atlas = ExtResource("4_i75m5")
+region = Rect2(315, 0, 105, 123)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ccs8d"]
+atlas = ExtResource("4_i75m5")
+region = Rect2(210, 0, 105, 123)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yd1p6"]
+atlas = ExtResource("4_i75m5")
+region = Rect2(420, 0, 105, 123)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4sswu"]
+atlas = ExtResource("4_i75m5")
+region = Rect2(448, 123, 112, 123)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m0cu7"]
+atlas = ExtResource("4_i75m5")
+region = Rect2(0, 123, 112, 123)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7271l"]
+atlas = ExtResource("4_i75m5")
+region = Rect2(112, 123, 112, 123)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0ftk4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i75m5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0ftk4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4w372")
+}],
+"loop": true,
+"name": &"float",
+"speed": 3.5
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ucpyl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tccfi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ccs8d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yd1p6")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 1.02
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4sswu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m0cu7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7271l")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oe0ax"]
+atlas = ExtResource("4_ucpyl")
+region = Rect2(0, 0, 597, 521)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pua72"]
+atlas = ExtResource("4_ucpyl")
+region = Rect2(597, 0, 597, 521)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1fcei"]
+atlas = ExtResource("4_ucpyl")
+region = Rect2(1194, 0, 597, 521)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_avo23"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oe0ax")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pua72")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1fcei")
+}],
+"loop": true,
+"name": &"gravity_change_effect",
+"speed": 7.0
+}]
+
+[node name="Node2D" type="Node2D" unique_id=1796566388]
+position = Vector2(536, 321)
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="." unique_id=1449295797]
+
+[node name="FondoPlanetas" type="Sprite2D" parent="StaticBody2D2" unique_id=1992649440]
+texture_filter = 1
+position = Vector2(107, -21)
+texture = ExtResource("1_216fp")
+script = SubResource("GDScript_mxyds")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1794371122]
+
+[node name="Nave" type="Sprite2D" parent="StaticBody2D" unique_id=1540118812]
+texture_filter = 1
+position = Vector2(41.75, 2.5000644)
+scale = Vector2(1.4052248, 2.1485152)
+texture = ExtResource("2_83tkt")
+
+[node name="NaveMorado" type="Sprite2D" parent="StaticBody2D" unique_id=1953488534]
+visible = false
+texture_filter = 1
+position = Vector2(41.25, 0.25)
+scale = Vector2(1.40887, 2.1567657)
+texture = ExtResource("3_i75m5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1117157975]
+position = Vector2(90.99213, 419.50006)
+scale = Vector2(1.4015796, 2.1468647)
+shape = SubResource("RectangleShape2D_i75m5")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="StaticBody2D" unique_id=2089450561]
+position = Vector2(-650, -115.49997)
+scale = Vector2(1.4015796, 2.1468647)
+shape = SubResource("RectangleShape2D_ucpyl")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="StaticBody2D" unique_id=1966426754]
+position = Vector2(767.5586, -117.69534)
+scale = Vector2(1.4015796, 2.1468647)
+shape = SubResource("RectangleShape2D_ccs8d")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D" unique_id=2116566172]
+position = Vector2(40.992126, -401.5)
+scale = Vector2(1.4015796, 2.1468647)
+shape = SubResource("RectangleShape2D_yd1p6")
+
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="StaticBody2D" unique_id=753093223]
+position = Vector2(753.25, 199.5)
+shape = SubResource("RectangleShape2D_mxyds")
+
+[node name="jugador" type="CharacterBody2D" parent="." unique_id=491229218]
+position = Vector2(4, -9)
+script = SubResource("GDScript_i75m5")
+
+[node name="SonidoGravedad" type="AudioStreamPlayer" parent="jugador" unique_id=266589403]
+stream = ExtResource("4_tccfi")
+volume_db = 5.859
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="jugador" unique_id=127275790]
+position = Vector2(-465.59375, 247.5)
+shape = SubResource("RectangleShape2D_tccfi")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="jugador" unique_id=673597377]
+texture_filter = 1
+position = Vector2(-463, 242)
+scale = Vector2(0.662397, 0.63313013)
+sprite_frames = SubResource("SpriteFrames_0ftk4")
+animation = &"idle"
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1630622648]
+
+[node name="Control" type="Control" parent="CanvasLayer" unique_id=191271122]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Niebla_gravedad-efecto" type="AnimatedSprite2D" parent="CanvasLayer/Control" unique_id=1921539021]
+visible = false
+z_index = 1008
+texture_filter = 1
+position = Vector2(556, 267)
+scale = Vector2(2.3157454, 1.5940499)
+sprite_frames = SubResource("SpriteFrames_avo23")
+animation = &"gravity_change_effect"
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/Control" unique_id=25106774]
+layout_mode = 0
+offset_left = 406.0
+offset_top = 599.0
+offset_right = 740.0
+offset_bottom = 634.0
+
+[node name="ColorRect2" type="ColorRect" parent="CanvasLayer/Control" unique_id=2050881671]
+clip_contents = true
+layout_mode = 0
+offset_left = 410.0
+offset_top = 605.0
+offset_right = 736.0
+offset_bottom = 629.0
+color = Color(0.43529412, 0.13333334, 0.6745098, 1)
+
+[node name="Label" type="Label" parent="CanvasLayer/Control/ColorRect2" unique_id=2011597946]
+layout_mode = 0
+offset_right = 326.0
+offset_bottom = 24.0
+text = "GRAVEDAD"
+horizontal_alignment = 1
+uppercase = true
+
+[node name="Soundtrack" type="AudioStreamPlayer" parent="." unique_id=642218430]
+stream = ExtResource("7_ccs8d")
+autoplay = true
