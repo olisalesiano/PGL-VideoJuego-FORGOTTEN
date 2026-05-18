@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://6ilb7m3f2hny"]
+
+[ext_resource type="Texture2D" uid="uid://7j04bilq37bu" path="res://assets/objetos/obstáculos/cajas-varias.png" id="1_vvar7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pua72"]
+size = Vector2(82, 50)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1fcei"]
+size = Vector2(44, 50)
+
+[node name="cajas_varias" type="StaticBody2D" unique_id=2144215829]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2123136071]
+texture = ExtResource("1_vvar7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=325490175]
+position = Vector2(0, 19)
+shape = SubResource("RectangleShape2D_pua72")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="." unique_id=209659790]
+position = Vector2(0, -18)
+shape = SubResource("RectangleShape2D_1fcei")

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cx4pl424v7s0q"
-path="res://.godot/imported/nave-morado-fondoblanco.png-f124190e3a8d1c7d499b67a30887cabf.ctex"
+uid="uid://c6p3ntuninkra"
+path="res://.godot/imported/logo-astronauta.png-390f0e9b37cde5a7d19b60f0c8a5d742.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/fondo-jugable/nave-morado-fondoblanco.png"
-dest_files=["res://.godot/imported/nave-morado-fondoblanco.png-f124190e3a8d1c7d499b67a30887cabf.ctex"]
+source_file="res://assets/logo-astronauta.png"
+dest_files=["res://.godot/imported/logo-astronauta.png-390f0e9b37cde5a7d19b60f0c8a5d742.ctex"]
 
 [params]
 

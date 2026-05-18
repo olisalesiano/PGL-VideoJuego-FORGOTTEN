@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dvfeluicx21e1"
-path="res://.godot/imported/nueva_partida.png-922c35a1e74a39c77bb801187aff30fc.ctex"
+uid="uid://bfk3e2opjah1d"
+path="res://.godot/imported/caja.png-8f678742f49e7b5a241755e0d0a04f39.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/interactuables/nueva_partida.png"
-dest_files=["res://.godot/imported/nueva_partida.png-922c35a1e74a39c77bb801187aff30fc.ctex"]
+source_file="res://assets/objetos/obstáculos/caja.png"
+dest_files=["res://.godot/imported/caja.png-8f678742f49e7b5a241755e0d0a04f39.ctex"]
 
 [params]
 

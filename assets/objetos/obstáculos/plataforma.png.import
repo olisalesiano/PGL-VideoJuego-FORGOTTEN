@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cx4pl424v7s0q"
-path="res://.godot/imported/nave-morado-fondoblanco.png-f124190e3a8d1c7d499b67a30887cabf.ctex"
+uid="uid://dwtc4j7y7hk1v"
+path="res://.godot/imported/plataforma.png-d3366eefc278be31a162f76e4ca4518a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/fondo-jugable/nave-morado-fondoblanco.png"
-dest_files=["res://.godot/imported/nave-morado-fondoblanco.png-f124190e3a8d1c7d499b67a30887cabf.ctex"]
+source_file="res://assets/objetos/obstáculos/plataforma.png"
+dest_files=["res://.godot/imported/plataforma.png-d3366eefc278be31a162f76e4ca4518a.ctex"]
 
 [params]
 

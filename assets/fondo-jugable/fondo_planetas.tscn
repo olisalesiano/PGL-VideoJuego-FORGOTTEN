@@ -3,11 +3,17 @@
 [ext_resource type="Texture2D" uid="uid://b467kq1li2027" path="res://assets/fondo-jugable/fondo-planetas.png" id="1_216fp"]
 [ext_resource type="Texture2D" uid="uid://caycp2myi0i03" path="res://assets/fondo-jugable/nave-fondoblanco.png" id="2_83tkt"]
 [ext_resource type="Script" uid="uid://crsrvt88cfmqr" path="res://assets/fondo-jugable/fondo_planetas.gd" id="2_ucpyl"]
-[ext_resource type="Texture2D" uid="uid://c4fvv3hndor3q" path="res://assets/fondo-jugable/nave-morado-fondoblanco.png" id="3_i75m5"]
+[ext_resource type="Texture2D" uid="uid://cx4pl424v7s0q" path="res://assets/fondo-jugable/nave-morado-fondoblanco.png" id="3_i75m5"]
 [ext_resource type="Texture2D" uid="uid://dtxou81bbvvqf" path="res://assets/personaje/idle.png" id="4_i75m5"]
 [ext_resource type="AudioStream" uid="uid://b1rruetp4xrks" path="res://assets/audio/sonido_gravedad.mp3" id="4_tccfi"]
 [ext_resource type="Texture2D" uid="uid://bw6o2g3l1pgcn" path="res://assets/fondo-jugable/transición_niebla.png" id="4_ucpyl"]
 [ext_resource type="AudioStream" uid="uid://cep8r14e47k3y" path="res://assets/audio/soundtrack_playing.mp3" id="7_ccs8d"]
+[ext_resource type="Texture2D" uid="uid://c6p3ntuninkra" path="res://assets/logo-astronauta.png" id="9_4w372"]
+[ext_resource type="PackedScene" uid="uid://donmvn23teqd8" path="res://assets/objetos/obstáculos/plataforma.tscn" id="9_m0cu7"]
+[ext_resource type="Texture2D" uid="uid://csk3cbndnjife" path="res://assets/objetos/obstáculos/bandera_final.png" id="10_4sswu"]
+[ext_resource type="PackedScene" uid="uid://c37lpkkget7jk" path="res://assets/objetos/obstáculos/pilar.tscn" id="10_7271l"]
+[ext_resource type="PackedScene" uid="uid://6ilb7m3f2hny" path="res://assets/objetos/obstáculos/cajas_varias.tscn" id="11_oe0ax"]
+[ext_resource type="Texture2D" uid="uid://bfk3e2opjah1d" path="res://assets/objetos/obstáculos/caja.png" id="12_pua72"]
 
 [sub_resource type="GDScript" id="GDScript_mxyds"]
 script/source = "extends Node2D
@@ -267,6 +273,9 @@ animations = [{
 "speed": 7.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1fcei"]
+size = Vector2(58, 52)
+
 [node name="Node2D" type="Node2D" unique_id=1796566388]
 position = Vector2(536, 321)
 script = ExtResource("2_ucpyl")
@@ -412,7 +421,60 @@ horizontal_alignment = 1
 uppercase = true
 metadata/_edit_lock_ = true
 
+[node name="ContadorEstrellas" type="Label" parent="CanvasLayer/Control" unique_id=1987732172]
+layout_mode = 0
+offset_left = 942.0
+offset_top = 605.0
+offset_right = 982.0
+offset_bottom = 628.0
+
+[node name="texto-ContadorEstrellas" type="Label" parent="CanvasLayer/Control" unique_id=1805112651]
+layout_mode = 0
+offset_left = 843.0
+offset_top = 605.0
+offset_right = 931.0
+offset_bottom = 628.0
+text = "ESTRELLAS:"
+
 [node name="Soundtrack" type="AudioStreamPlayer" parent="." unique_id=642218430]
 stream = ExtResource("7_ccs8d")
 volume_db = -5.93
 autoplay = true
+
+[node name="objetos" type="StaticBody2D" parent="." unique_id=184375125]
+
+[node name="obstáculos" type="StaticBody2D" parent="objetos" unique_id=1934420677]
+
+[node name="plataforma" parent="objetos/obstáculos" unique_id=1750989910 instance=ExtResource("9_m0cu7")]
+position = Vector2(393, -82)
+
+[node name="plataforma2" parent="objetos/obstáculos" unique_id=1591545622 instance=ExtResource("9_m0cu7")]
+position = Vector2(49, -82)
+
+[node name="pilar" parent="objetos/obstáculos" unique_id=993470119 instance=ExtResource("10_7271l")]
+position = Vector2(341, -165)
+
+[node name="cajas_varias" parent="objetos/obstáculos" unique_id=2144215829 instance=ExtResource("11_oe0ax")]
+position = Vector2(402, -140)
+
+[node name="caja" type="StaticBody2D" parent="objetos/obstáculos" unique_id=723051929]
+
+[node name="Sprite2D" type="Sprite2D" parent="objetos/obstáculos/caja" unique_id=1469039070]
+texture = ExtResource("12_pua72")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="objetos/obstáculos/caja" unique_id=649399641]
+shape = SubResource("RectangleShape2D_1fcei")
+
+[node name="interactuables" type="StaticBody2D" parent="objetos" unique_id=234158951]
+
+[node name="LogoAstronauta" type="Sprite2D" parent="." unique_id=1039817762]
+position = Vector2(575, 269)
+scale = Vector2(0.12227074, 0.112844035)
+texture = ExtResource("9_4w372")
+
+[node name="BanderaFinal" type="Sprite2D" parent="." unique_id=17609253]
+position = Vector2(565, 154.00003)
+rotation = -0.5856454
+scale = Vector2(0.19298641, 0.2598015)
+texture = ExtResource("10_4sswu")
+flip_h = true

@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://c37lpkkget7jk"]
+
+[ext_resource type="Texture2D" uid="uid://bermwnl04hwgt" path="res://assets/objetos/obstáculos/pilar.png" id="1_db7it"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oe0ax"]
+size = Vector2(21, 115)
+
+[node name="pilar" type="StaticBody2D" unique_id=993470119]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=749115126]
+texture = ExtResource("1_db7it")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1981032864]
+position = Vector2(-0.5, -0.5)
+shape = SubResource("RectangleShape2D_oe0ax")

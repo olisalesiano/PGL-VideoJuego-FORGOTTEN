@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://uroxk5a7myei"
-path="res://.godot/imported/inicio.png-db51163b1c41ca85d35f758a0bc51a0d.ctex"
+uid="uid://dpapdgwqu2kdn"
+path="res://.godot/imported/estrella.png-fbd56322e6b152a38bc5cdbc9a679c81.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/interactuables/inicio.png"
-dest_files=["res://.godot/imported/inicio.png-db51163b1c41ca85d35f758a0bc51a0d.ctex"]
+source_file="res://assets/objetos/interactuables/estrella.png"
+dest_files=["res://.godot/imported/estrella.png-fbd56322e6b152a38bc5cdbc9a679c81.ctex"]
 
 [params]
 
