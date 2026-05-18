@@ -140,7 +140,7 @@ func _physics_process(delta: float) -> void:
 			float_mode = false
 		elif not gravity_inverted and is_on_floor():
 			float_mode = false
-d	contador.text = str(GameState.estrellas_recogidas) + \" / 3\"
+	contador.text = str(GameState.estrellas_recogidas) + \" / 3\"
 	move_and_slide()
 func _hacer_efecto_niebla() -> void:
 	niebla.modulate.a = 0.0

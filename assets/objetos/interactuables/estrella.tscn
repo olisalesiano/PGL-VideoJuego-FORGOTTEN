@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://cygwpsafplis2"]
+
+[ext_resource type="Script" uid="uid://bk6m8buhac3jt" path="res://assets/fondo-jugable/estrella.gd" id="1_1mll5"]
+[ext_resource type="Texture2D" uid="uid://dpapdgwqu2kdn" path="res://assets/objetos/interactuables/estrella.png" id="2_ep7ai"]
+[ext_resource type="AudioStream" uid="uid://dkui6ir34sker" path="res://assets/audio/estrella_sonido.mp3" id="3_bkh6m"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_sxuoe"]
+radius = 11.0
+
+[node name="estrella" type="Area2D" unique_id=244362115]
+script = ExtResource("1_1mll5")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2089008567]
+position = Vector2(-27.250002, -7)
+scale = Vector2(0.077662714, 0.08807588)
+texture = ExtResource("2_ep7ai")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=290555322]
+position = Vector2(-28, -6)
+shape = SubResource("CircleShape2D_sxuoe")
+
+[node name="EstrellaSonido" type="AudioStreamPlayer" parent="." unique_id=1679537183]
+stream = ExtResource("3_bkh6m")

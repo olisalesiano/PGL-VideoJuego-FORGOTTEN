@@ -69,13 +69,16 @@ var pos_destino_x := 0.0
 var gravity_inverted := false
 var float_mode := false
 var cooldown_restante := 0.0
+var barra_ancho_total: float = 0.0
 @onready var nave: Node = get_node(\"/root/Node2D/nave/Nave\")
 @onready var nave_morado: Node = get_node(\"/root/Node2D/nave/NaveMorado\")
 @onready var niebla: AnimatedSprite2D = get_node(\"/root/Node2D/efecto-comienzo/Control/Niebla_gravedad-efecto\")
 @onready var barra: ColorRect = get_node(\"/root/Node2D/efecto-comienzo/Control/ColorRect2\")
 @onready var sonido_gravedad: AudioStreamPlayer = $SonidoGravedad
 @onready var contador: Label = get_node(\"/root/Node2D/efecto-comienzo/Control/ContadorEstrellas\")
+@onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 func _ready() -> void:
+	barra_ancho_total = barra.size.x
 	nave.visible = true
 	nave_morado.visible = false
 	niebla.modulate.a = 0.0
@@ -140,7 +143,7 @@ func _physics_process(delta: float) -> void:
 			float_mode = false
 		elif not gravity_inverted and is_on_floor():
 			float_mode = false
-d	contador.text = str(GameState.estrellas_recogidas) + \" / 3\"
+	contador.text = str(GameState.estrellas_recogidas) + \" / 3\"
 	move_and_slide()
 func _hacer_efecto_niebla() -> void:
 	niebla.modulate.a = 0.0
