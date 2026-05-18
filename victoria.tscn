@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://ct7ohpqj4s0km"]
+
+[ext_resource type="Script" uid="uid://dv40trmuslgfl" path="res://victoria.gd" id="1_58qoj"]
+[ext_resource type="Texture2D" uid="uid://dpapdgwqu2kdn" path="res://assets/objetos/interactuables/estrella.png" id="2_fty84"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_tvgrv"]
+font_size = 150
+font_color = Color(0, 0.7708899, 0, 1)
+
+[node name="victoria" type="Control" unique_id=1817084270]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_58qoj")
+
+[node name="fondo" type="ColorRect" parent="." unique_id=1355917238]
+layout_mode = 0
+offset_left = -31.0
+offset_top = -24.0
+offset_right = 1178.0
+offset_bottom = 673.0
+color = Color(0, 0, 0, 1)
+
+[node name="texto-victoria" type="Label" parent="." unique_id=715685847]
+layout_mode = 0
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 1151.0
+offset_bottom = 505.0
+text = "¡VICTORIA!"
+label_settings = SubResource("LabelSettings_tvgrv")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=770729716]
+layout_mode = 0
+offset_left = 354.0
+offset_top = 341.0
+offset_right = 834.0
+offset_bottom = 497.0
+
+[node name="estrella1" type="TextureRect" parent="HBoxContainer" unique_id=1295819498]
+layout_mode = 2
+texture = ExtResource("2_fty84")
+expand_mode = 2
+
+[node name="estrella2" type="TextureRect" parent="HBoxContainer" unique_id=179742002]
+layout_mode = 2
+texture = ExtResource("2_fty84")
+expand_mode = 2
+
+[node name="estrella3" type="TextureRect" parent="HBoxContainer" unique_id=1050327364]
+layout_mode = 2
+texture = ExtResource("2_fty84")
+expand_mode = 2
+
+[node name="texto-chancla" type="Label" parent="." unique_id=343231243]
+layout_mode = 0
+offset_left = 444.0
+offset_top = 513.0
+offset_right = 735.0
+offset_bottom = 536.0
+text = "cógelas todas anda, no seas chancla..."
+
+[node name="reiniciar" type="Button" parent="." unique_id=2090713946]
+layout_mode = 0
+offset_left = 471.0
+offset_top = 547.0
+offset_right = 708.0
+offset_bottom = 618.0
+text = "REINICIAR"

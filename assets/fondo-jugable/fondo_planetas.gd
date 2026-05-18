@@ -1,5 +1,5 @@
 extends Node2D
-@onready var negro: ColorRect = $CanvasLayer2/ColorRect
+@onready var negro: ColorRect = $"efecto-negro/ColorRect"
 
 func _ready() -> void:
 	negro.visible = true

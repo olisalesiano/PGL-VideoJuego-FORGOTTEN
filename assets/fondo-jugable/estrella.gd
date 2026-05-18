@@ -10,6 +10,6 @@ func _on_body_entered(body: Node) -> void:
 		GameState.estrellas_recogidas += 1
 		estrella_sonido.play()
 		$Sprite2D.visible = false
-		$CollisionShape2D.disabled = true
+		set_deferred("monitoring", false)
 		await estrella_sonido.finished
 		queue_free()

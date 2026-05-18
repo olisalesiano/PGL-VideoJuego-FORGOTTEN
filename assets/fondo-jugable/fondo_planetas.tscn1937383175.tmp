@@ -9,7 +9,6 @@
 [ext_resource type="Texture2D" uid="uid://bw6o2g3l1pgcn" path="res://assets/fondo-jugable/transición_niebla.png" id="4_ucpyl"]
 [ext_resource type="Script" uid="uid://bqxr3yl8nvm2j" path="res://assets/personaje/jugador.gd" id="5_1fcei"]
 [ext_resource type="AudioStream" uid="uid://cep8r14e47k3y" path="res://assets/audio/soundtrack_playing.mp3" id="7_ccs8d"]
-[ext_resource type="AudioStream" uid="uid://cpfkhsy2mmf0k" path="res://assets/audio/SonidoMuerte.mp3" id="8_sxuoe"]
 [ext_resource type="Texture2D" uid="uid://c6p3ntuninkra" path="res://assets/logo-astronauta.png" id="9_4w372"]
 [ext_resource type="PackedScene" uid="uid://donmvn23teqd8" path="res://assets/objetos/obstáculos/plataforma.tscn" id="9_m0cu7"]
 [ext_resource type="Texture2D" uid="uid://csk3cbndnjife" path="res://assets/objetos/obstáculos/bandera_final.png" id="10_4sswu"]
@@ -17,8 +16,10 @@
 [ext_resource type="PackedScene" uid="uid://6ilb7m3f2hny" path="res://assets/objetos/obstáculos/cajas_varias.tscn" id="11_oe0ax"]
 [ext_resource type="PackedScene" uid="uid://dpne6bkn4ddej" path="res://assets/objetos/obstáculos/caja.tscn" id="12_avo23"]
 [ext_resource type="PackedScene" uid="uid://cygwpsafplis2" path="res://assets/objetos/interactuables/estrella.tscn" id="13_pua72"]
-[ext_resource type="Script" uid="uid://bt0us4maopc1k" path="res://assets/fondo-jugable/final.gd" id="16_tgisk"]
-[ext_resource type="PackedScene" uid="uid://cx8tvm1c4a77g" path="res://assets/enemigos/alien_suelo/alien_suelo.tscn" id="19_w5bny"]
+[ext_resource type="Texture2D" uid="uid://bfb4cyqvlxxc0" path="res://assets/enemigos/alien_suelo/alien-suelo-movement.png" id="17_avo23"]
+[ext_resource type="Script" uid="uid://bw1b8it2ir7aj" path="res://assets/fondo-jugable/alien_suelo.gd" id="17_h33ar"]
+[ext_resource type="AudioStream" uid="uid://bwoblfcgg8x5x" path="res://assets/audio/aww.mp3" id="19_sxuoe"]
+[ext_resource type="AudioStream" uid="uid://pigcwvnbqx8e" path="res://assets/audio/splash-death.mp3" id="20_tgisk"]
 
 [sub_resource type="GDScript" id="GDScript_mxyds"]
 script/source = "extends Node2D
@@ -180,18 +181,43 @@ animations = [{
 "speed": 7.0
 }]
 
-[sub_resource type="LabelSettings" id="LabelSettings_h33ar"]
-font_size = 150
-font_color = Color(0.9999998, 0.16541186, 0.11993807, 1)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_w5bny"]
-size = Vector2(106.82364, 88.04901)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ci1v7"]
-size = Vector2(18.999054, 0.99907684)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1fcei"]
 size = Vector2(62, 228.5)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0jpw8"]
+atlas = ExtResource("17_avo23")
+region = Rect2(0, 0, 275, 302)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w5bny"]
+atlas = ExtResource("17_avo23")
+region = Rect2(275, 0, 275, 302)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h33ar"]
+atlas = ExtResource("17_avo23")
+region = Rect2(550, 0, 275, 302)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_sxuoe"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0jpw8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w5bny")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h33ar")
+}],
+"loop": true,
+"name": &"alien_floor_walk",
+"speed": 2.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tgisk"]
+size = Vector2(27, 34)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8wknc"]
+size = Vector2(25, 23.5)
 
 [node name="Node2D" type="Node2D" unique_id=1796566388]
 position = Vector2(536, 321)
@@ -291,12 +317,7 @@ sprite_frames = SubResource("SpriteFrames_0ftk4")
 animation = &"idle"
 metadata/_edit_lock_ = true
 
-[node name="SonidoMuerte" type="AudioStreamPlayer" parent="jugador" unique_id=490258410]
-stream = ExtResource("8_sxuoe")
-volume_db = 15.0
-
 [node name="efecto-comienzo" type="CanvasLayer" parent="." unique_id=1630622648]
-layer = 10
 
 [node name="Control" type="Control" parent="efecto-comienzo" unique_id=191271122]
 layout_mode = 3
@@ -358,34 +379,6 @@ offset_right = 931.0
 offset_bottom = 628.0
 text = "ESTRELLAS:"
 
-[node name="muerte" type="StaticBody2D" parent="efecto-comienzo/Control" unique_id=1184549523]
-visible = false
-
-[node name="fondo-muerte" type="ColorRect" parent="efecto-comienzo/Control/muerte" unique_id=2076435938]
-offset_left = -32.0
-offset_top = -41.0
-offset_right = 1195.0
-offset_bottom = 692.0
-color = Color(0, 0, 0, 1)
-
-[node name="texto-muerte" type="Label" parent="efecto-comienzo/Control/muerte" unique_id=10813125]
-offset_left = 1.0
-offset_top = 2.0
-offset_right = 1149.0
-offset_bottom = 643.0
-text = "MORIDO"
-label_settings = SubResource("LabelSettings_h33ar")
-horizontal_alignment = 1
-vertical_alignment = 1
-uppercase = true
-
-[node name="barra-muerte" type="ColorRect" parent="efecto-comienzo/Control/muerte" unique_id=260679034]
-offset_left = 276.0
-offset_top = 418.0
-offset_right = 880.0
-offset_bottom = 446.0
-color = Color(1, 0.16470589, 0.12156863, 1)
-
 [node name="Soundtrack" type="AudioStreamPlayer" parent="." unique_id=642218430]
 stream = ExtResource("7_ccs8d")
 volume_db = -5.93
@@ -405,22 +398,12 @@ position = Vector2(50, -75)
 position = Vector2(66, 214)
 rotation = -0.45596987
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="objetos/obstáculos/plataforma3" unique_id=440852032]
-position = Vector2(-8.540161, 37.241943)
-rotation = 0.45272604
-scale = Vector2(0.9999997, 0.9999997)
-shape = SubResource("RectangleShape2D_w5bny")
-
 [node name="pilar" parent="objetos/obstáculos" unique_id=993470119 instance=ExtResource("10_7271l")]
 position = Vector2(342, -158)
 
 [node name="pilar2" parent="objetos/obstáculos" unique_id=770580998 instance=ExtResource("10_7271l")]
 position = Vector2(-439, -152)
 rotation = 1.5706923
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="objetos/obstáculos/pilar2" unique_id=592168115]
-position = Vector2(-4.4945374, -57.50099)
-shape = SubResource("RectangleShape2D_ci1v7")
 
 [node name="cajas_varias" parent="objetos/obstáculos" unique_id=2144215829 instance=ExtResource("11_oe0ax")]
 position = Vector2(403, -133)
@@ -449,8 +432,7 @@ position = Vector2(-406, -209)
 [node name="estrella3" parent="objetos/interactuables" unique_id=227588096 instance=ExtResource("13_pua72")]
 position = Vector2(532, -132)
 
-[node name="final" type="Area2D" parent="objetos" unique_id=75386682]
-script = ExtResource("16_tgisk")
+[node name="final" type="StaticBody2D" parent="objetos" unique_id=1131364278]
 
 [node name="BanderaFinal" type="Sprite2D" parent="objetos/final" unique_id=17609253]
 position = Vector2(565, 154.00003)
@@ -468,17 +450,33 @@ position = Vector2(575, 269)
 scale = Vector2(0.12227074, 0.112844035)
 texture = ExtResource("9_4w372")
 
-[node name="enemigo" type="StaticBody2D" parent="." unique_id=1665753785]
+[node name="enemigos" type="StaticBody2D" parent="." unique_id=1665753785]
 
-[node name="alien_suelo" parent="enemigo" unique_id=364961260 instance=ExtResource("19_w5bny")]
+[node name="alien_flotante" type="StaticBody2D" parent="enemigos" unique_id=522412030]
 
-[node name="alien_suelo2" parent="enemigo" unique_id=1727531947 instance=ExtResource("19_w5bny")]
-position = Vector2(210, 362)
+[node name="alien_suelo" type="CharacterBody2D" parent="enemigos" unique_id=1021780565]
+script = ExtResource("17_h33ar")
 
-[node name="alien_suelo3" parent="enemigo" unique_id=491504420 instance=ExtResource("19_w5bny")]
-position = Vector2(-475, -62)
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="enemigos/alien_suelo" unique_id=72920805]
+position = Vector2(9, -121)
+scale = Vector2(0.22363636, 0.21854305)
+sprite_frames = SubResource("SpriteFrames_sxuoe")
+animation = &"alien_floor_walk"
+frame = 2
+frame_progress = 0.3625462
 
-[node name="alien_suelo4" parent="enemigo" unique_id=1615525418 instance=ExtResource("19_w5bny")]
-position = Vector2(261, -149)
-rotation = 3.1227536
-invertido = true
+[node name="Collision-CUERPO" type="CollisionShape2D" parent="enemigos/alien_suelo" unique_id=1745147754]
+position = Vector2(10.5, -118)
+shape = SubResource("RectangleShape2D_tgisk")
+
+[node name="cabeza" type="Area2D" parent="enemigos/alien_suelo" unique_id=2143092181]
+
+[node name="Collision-CABEZA" type="CollisionShape2D" parent="enemigos/alien_suelo/cabeza" unique_id=1119412240]
+position = Vector2(10.5, -135.25)
+shape = SubResource("RectangleShape2D_8wknc")
+
+[node name="Aww" type="AudioStreamPlayer" parent="enemigos/alien_suelo" unique_id=7340302]
+stream = ExtResource("19_sxuoe")
+
+[node name="SplashDeath" type="AudioStreamPlayer" parent="enemigos/alien_suelo" unique_id=338211736]
+stream = ExtResource("20_tgisk")

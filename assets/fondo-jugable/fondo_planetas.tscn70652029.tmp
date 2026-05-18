@@ -7,9 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://dtxou81bbvvqf" path="res://assets/personaje/idle.png" id="4_i75m5"]
 [ext_resource type="AudioStream" uid="uid://b1rruetp4xrks" path="res://assets/audio/sonido_gravedad.mp3" id="4_tccfi"]
 [ext_resource type="Texture2D" uid="uid://bw6o2g3l1pgcn" path="res://assets/fondo-jugable/transición_niebla.png" id="4_ucpyl"]
-[ext_resource type="Script" uid="uid://bqxr3yl8nvm2j" path="res://assets/personaje/jugador.gd" id="5_1fcei"]
 [ext_resource type="AudioStream" uid="uid://cep8r14e47k3y" path="res://assets/audio/soundtrack_playing.mp3" id="7_ccs8d"]
-[ext_resource type="AudioStream" uid="uid://cpfkhsy2mmf0k" path="res://assets/audio/SonidoMuerte.mp3" id="8_sxuoe"]
 [ext_resource type="Texture2D" uid="uid://c6p3ntuninkra" path="res://assets/logo-astronauta.png" id="9_4w372"]
 [ext_resource type="PackedScene" uid="uid://donmvn23teqd8" path="res://assets/objetos/obstáculos/plataforma.tscn" id="9_m0cu7"]
 [ext_resource type="Texture2D" uid="uid://csk3cbndnjife" path="res://assets/objetos/obstáculos/bandera_final.png" id="10_4sswu"]
@@ -17,8 +15,6 @@
 [ext_resource type="PackedScene" uid="uid://6ilb7m3f2hny" path="res://assets/objetos/obstáculos/cajas_varias.tscn" id="11_oe0ax"]
 [ext_resource type="PackedScene" uid="uid://dpne6bkn4ddej" path="res://assets/objetos/obstáculos/caja.tscn" id="12_avo23"]
 [ext_resource type="PackedScene" uid="uid://cygwpsafplis2" path="res://assets/objetos/interactuables/estrella.tscn" id="13_pua72"]
-[ext_resource type="Script" uid="uid://bt0us4maopc1k" path="res://assets/fondo-jugable/final.gd" id="16_tgisk"]
-[ext_resource type="PackedScene" uid="uid://cx8tvm1c4a77g" path="res://assets/enemigos/alien_suelo/alien_suelo.tscn" id="19_w5bny"]
 
 [sub_resource type="GDScript" id="GDScript_mxyds"]
 script/source = "extends Node2D
@@ -59,6 +55,107 @@ size = Vector2(120.5, 339)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0ftk4"]
 size = Vector2(56, 226.5)
+
+[sub_resource type="GDScript" id="GDScript_i75m5"]
+script/source = "extends CharacterBody2D
+const SPEED = 150.0
+const GRAVEDAD_TIERRA = 450.0
+const GRAVEDAD_LUNA = 100.0
+const JUMP_VELOCITY = -250.0
+const IMPULSO_GRAVEDAD = -120.0
+const COOLDOWN_TIEMPO = 3.0
+var intro_activa := true
+var pos_destino_x := 0.0
+var gravity_inverted := false
+var float_mode := false
+var cooldown_restante := 0.0
+@onready var nave: Node = get_node(\"/root/Node2D/nave/Nave\")
+@onready var nave_morado: Node = get_node(\"/root/Node2D/nave/NaveMorado\")
+@onready var niebla: AnimatedSprite2D = get_node(\"/root/Node2D/efecto-comienzo/Control/Niebla_gravedad-efecto\")
+@onready var barra: ColorRect = get_node(\"/root/Node2D/efecto-comienzo/Control/ColorRect2\")
+@onready var sonido_gravedad: AudioStreamPlayer = $SonidoGravedad
+@onready var contador: Label = get_node(\"/root/Node2D/efecto-comienzo/Control/ContadorEstrellas\")
+@onready var anim: AnimatedSprite2D = $AnimatedSprite2D
+@onready var barra_ancho_total: float = 0.0
+func _ready() -> void:
+	barra_ancho_total = barra.size.x
+	nave.visible = true
+	nave_morado.visible = false
+	niebla.modulate.a = 0.0
+	niebla.visible = true
+	pos_destino_x = position.x
+	position.x = -200.0
+func _physics_process(delta: float) -> void:
+	if intro_activa:
+		position.x = move_toward(position.x, pos_destino_x, 80.0 * delta)
+		if anim.animation != \"walk\":
+			anim.play(\"walk\")
+		if position.x >= pos_destino_x:
+			intro_activa = false
+			anim.play(\"idle\")
+		return
+	if cooldown_restante > 0.0:
+		cooldown_restante -= delta
+		cooldown_restante = max(cooldown_restante, 0.0)
+		var progreso := 1.0 - (cooldown_restante / COOLDOWN_TIEMPO)
+		barra.size.x = barra_ancho_total * progreso
+	else:
+		barra.size.x = barra_ancho_total
+	if gravity_inverted:
+		velocity.y -= GRAVEDAD_LUNA * delta
+	else:
+		velocity.y += GRAVEDAD_TIERRA * delta
+	if Input.is_action_just_pressed(\"ui_select\") and cooldown_restante <= 0.0:
+		sonido_gravedad.play()
+		gravity_inverted = not gravity_inverted
+		float_mode = true
+		anim.rotation_degrees = 180 if gravity_inverted else 0
+		if gravity_inverted:
+			velocity.y = IMPULSO_GRAVEDAD
+		else:
+			velocity.y = 0
+		cooldown_restante = COOLDOWN_TIEMPO
+		_hacer_efecto_niebla()
+	if Input.is_action_just_pressed(\"move_up\"):
+		if not gravity_inverted and is_on_floor():
+			velocity.y = JUMP_VELOCITY
+		elif gravity_inverted and is_on_ceiling():
+			velocity.y = GRAVEDAD_LUNA * 1.2
+	var en_aire := not is_on_floor() and not is_on_ceiling()
+	var cayendo := (not gravity_inverted and velocity.y > 0) or (gravity_inverted and velocity.y < 0)
+	var direction := Input.get_axis(\"move_left\", \"move_right\")
+	if direction != 0:
+		velocity.x = direction * SPEED
+		anim.flip_h = (direction < 0) != gravity_inverted
+	else:
+		velocity.x = move_toward(velocity.x, 0, SPEED)
+	if float_mode or (en_aire and cayendo):
+		if anim.animation != \"float\":
+			anim.play(\"float\")
+	elif direction != 0:
+		if anim.animation != \"walk\":
+			anim.play(\"walk\")
+	else:
+		if anim.animation != \"idle\":
+			anim.play(\"idle\")
+	if float_mode:
+		if gravity_inverted and is_on_ceiling():
+			float_mode = false
+		elif not gravity_inverted and is_on_floor():
+			float_mode = false
+	contador.text = str(GameState.estrellas_recogidas) + \" / 3\"
+	move_and_slide()
+func _hacer_efecto_niebla() -> void:
+	niebla.modulate.a = 0.0
+	niebla.play(\"gravity_change_effect\")
+	var tween := create_tween()
+	tween.tween_property(niebla, \"modulate:a\", 1.0, 0.25)
+	tween.tween_callback(_cambiar_fondo)
+	tween.tween_property(niebla, \"modulate:a\", 0.0, 0.25)
+func _cambiar_fondo() -> void:
+	nave.visible = not gravity_inverted
+	nave_morado.visible = gravity_inverted
+"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tccfi"]
 size = Vector2(35.1875, 55)
@@ -180,19 +277,6 @@ animations = [{
 "speed": 7.0
 }]
 
-[sub_resource type="LabelSettings" id="LabelSettings_h33ar"]
-font_size = 150
-font_color = Color(0.9999998, 0.16541186, 0.11993807, 1)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_w5bny"]
-size = Vector2(106.82364, 88.04901)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ci1v7"]
-size = Vector2(18.999054, 0.99907684)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_1fcei"]
-size = Vector2(62, 228.5)
-
 [node name="Node2D" type="Node2D" unique_id=1796566388]
 position = Vector2(536, 321)
 script = ExtResource("2_ucpyl")
@@ -271,7 +355,7 @@ metadata/_edit_lock_ = true
 
 [node name="jugador" type="CharacterBody2D" parent="." unique_id=491229218 groups=["jugador"]]
 position = Vector2(4, -9)
-script = ExtResource("5_1fcei")
+script = SubResource("GDScript_i75m5")
 metadata/_edit_lock_ = true
 
 [node name="SonidoGravedad" type="AudioStreamPlayer" parent="jugador" unique_id=266589403]
@@ -291,12 +375,7 @@ sprite_frames = SubResource("SpriteFrames_0ftk4")
 animation = &"idle"
 metadata/_edit_lock_ = true
 
-[node name="SonidoMuerte" type="AudioStreamPlayer" parent="jugador" unique_id=490258410]
-stream = ExtResource("8_sxuoe")
-volume_db = 15.0
-
 [node name="efecto-comienzo" type="CanvasLayer" parent="." unique_id=1630622648]
-layer = 10
 
 [node name="Control" type="Control" parent="efecto-comienzo" unique_id=191271122]
 layout_mode = 3
@@ -358,34 +437,6 @@ offset_right = 931.0
 offset_bottom = 628.0
 text = "ESTRELLAS:"
 
-[node name="muerte" type="StaticBody2D" parent="efecto-comienzo/Control" unique_id=1184549523]
-visible = false
-
-[node name="fondo-muerte" type="ColorRect" parent="efecto-comienzo/Control/muerte" unique_id=2076435938]
-offset_left = -32.0
-offset_top = -41.0
-offset_right = 1195.0
-offset_bottom = 692.0
-color = Color(0, 0, 0, 1)
-
-[node name="texto-muerte" type="Label" parent="efecto-comienzo/Control/muerte" unique_id=10813125]
-offset_left = 1.0
-offset_top = 2.0
-offset_right = 1149.0
-offset_bottom = 643.0
-text = "MORIDO"
-label_settings = SubResource("LabelSettings_h33ar")
-horizontal_alignment = 1
-vertical_alignment = 1
-uppercase = true
-
-[node name="barra-muerte" type="ColorRect" parent="efecto-comienzo/Control/muerte" unique_id=260679034]
-offset_left = 276.0
-offset_top = 418.0
-offset_right = 880.0
-offset_bottom = 446.0
-color = Color(1, 0.16470589, 0.12156863, 1)
-
 [node name="Soundtrack" type="AudioStreamPlayer" parent="." unique_id=642218430]
 stream = ExtResource("7_ccs8d")
 volume_db = -5.93
@@ -401,26 +452,8 @@ position = Vector2(394, -75)
 [node name="plataforma2" parent="objetos/obstáculos" unique_id=1591545622 instance=ExtResource("9_m0cu7")]
 position = Vector2(50, -75)
 
-[node name="plataforma3" parent="objetos/obstáculos" unique_id=371445031 instance=ExtResource("9_m0cu7")]
-position = Vector2(66, 214)
-rotation = -0.45596987
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="objetos/obstáculos/plataforma3" unique_id=440852032]
-position = Vector2(-8.540161, 37.241943)
-rotation = 0.45272604
-scale = Vector2(0.9999997, 0.9999997)
-shape = SubResource("RectangleShape2D_w5bny")
-
 [node name="pilar" parent="objetos/obstáculos" unique_id=993470119 instance=ExtResource("10_7271l")]
 position = Vector2(342, -158)
-
-[node name="pilar2" parent="objetos/obstáculos" unique_id=770580998 instance=ExtResource("10_7271l")]
-position = Vector2(-439, -152)
-rotation = 1.5706923
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="objetos/obstáculos/pilar2" unique_id=592168115]
-position = Vector2(-4.4945374, -57.50099)
-shape = SubResource("RectangleShape2D_ci1v7")
 
 [node name="cajas_varias" parent="objetos/obstáculos" unique_id=2144215829 instance=ExtResource("11_oe0ax")]
 position = Vector2(403, -133)
@@ -429,56 +462,25 @@ position = Vector2(403, -133)
 position = Vector2(25, -39)
 rotation = 3.1370895
 
-[node name="caja2" parent="objetos/obstáculos" unique_id=600588392 instance=ExtResource("12_avo23")]
-position = Vector2(-63, -112)
-
-[node name="caja3" parent="objetos/obstáculos" unique_id=481164930 instance=ExtResource("12_avo23")]
-position = Vector2(424, 242)
-
-[node name="pilar3" parent="objetos/obstáculos" unique_id=624747050 instance=ExtResource("10_7271l")]
-position = Vector2(-101, -2)
-
 [node name="interactuables" type="StaticBody2D" parent="objetos" unique_id=234158951]
 
 [node name="estrella" parent="objetos/interactuables" unique_id=244362115 instance=ExtResource("13_pua72")]
-position = Vector2(215, 238)
+position = Vector2(520, 22)
 
 [node name="estrella2" parent="objetos/interactuables" unique_id=1040844070 instance=ExtResource("13_pua72")]
-position = Vector2(-406, -209)
+position = Vector2(-393, -228)
 
 [node name="estrella3" parent="objetos/interactuables" unique_id=227588096 instance=ExtResource("13_pua72")]
 position = Vector2(532, -132)
-
-[node name="final" type="Area2D" parent="objetos" unique_id=75386682]
-script = ExtResource("16_tgisk")
-
-[node name="BanderaFinal" type="Sprite2D" parent="objetos/final" unique_id=17609253]
-position = Vector2(565, 154.00003)
-rotation = -0.5856454
-scale = Vector2(0.19298641, 0.2598015)
-texture = ExtResource("10_4sswu")
-flip_h = true
-
-[node name="CollisionFinal" type="CollisionShape2D" parent="objetos/final" unique_id=723055979]
-position = Vector2(678, 154.75)
-shape = SubResource("RectangleShape2D_1fcei")
 
 [node name="LogoAstronauta" type="Sprite2D" parent="." unique_id=1039817762]
 position = Vector2(575, 269)
 scale = Vector2(0.12227074, 0.112844035)
 texture = ExtResource("9_4w372")
 
-[node name="enemigo" type="StaticBody2D" parent="." unique_id=1665753785]
-
-[node name="alien_suelo" parent="enemigo" unique_id=364961260 instance=ExtResource("19_w5bny")]
-
-[node name="alien_suelo2" parent="enemigo" unique_id=1727531947 instance=ExtResource("19_w5bny")]
-position = Vector2(210, 362)
-
-[node name="alien_suelo3" parent="enemigo" unique_id=491504420 instance=ExtResource("19_w5bny")]
-position = Vector2(-475, -62)
-
-[node name="alien_suelo4" parent="enemigo" unique_id=1615525418 instance=ExtResource("19_w5bny")]
-position = Vector2(261, -149)
-rotation = 3.1227536
-invertido = true
+[node name="BanderaFinal" type="Sprite2D" parent="." unique_id=17609253]
+position = Vector2(565, 154.00003)
+rotation = -0.5856454
+scale = Vector2(0.19298641, 0.2598015)
+texture = ExtResource("10_4sswu")
+flip_h = true

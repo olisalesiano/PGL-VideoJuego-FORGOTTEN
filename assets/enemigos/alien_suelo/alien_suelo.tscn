@@ -1,0 +1,75 @@
+[gd_scene format=3 uid="uid://cx8tvm1c4a77g"]
+
+[ext_resource type="Script" uid="uid://bw1b8it2ir7aj" path="res://assets/fondo-jugable/alien_suelo.gd" id="1_pakbl"]
+[ext_resource type="Texture2D" uid="uid://bfb4cyqvlxxc0" path="res://assets/enemigos/alien_suelo/alien-suelo-movement.png" id="2_5amdn"]
+[ext_resource type="AudioStream" uid="uid://bwoblfcgg8x5x" path="res://assets/audio/aww.mp3" id="3_ggs0p"]
+[ext_resource type="AudioStream" uid="uid://pigcwvnbqx8e" path="res://assets/audio/splash-death.mp3" id="4_hq0tv"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w5bny"]
+atlas = ExtResource("2_5amdn")
+region = Rect2(275, 0, 275, 302)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h33ar"]
+atlas = ExtResource("2_5amdn")
+region = Rect2(550, 0, 275, 302)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_sxuoe"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w5bny")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h33ar")
+}],
+"loop": true,
+"name": &"alien_floor_walk",
+"speed": 2.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tgisk"]
+size = Vector2(27, 34)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8wknc"]
+size = Vector2(25, 23.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h33ar"]
+size = Vector2(26, 32)
+
+[node name="alien_suelo" type="CharacterBody2D" unique_id=364961260]
+script = ExtResource("1_pakbl")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=255029700]
+position = Vector2(8.75, -122)
+scale = Vector2(0.22363636, 0.21854305)
+sprite_frames = SubResource("SpriteFrames_sxuoe")
+animation = &"alien_floor_walk"
+frame = 1
+frame_progress = 0.49721155
+
+[node name="cuerpo" type="Area2D" parent="." unique_id=1048529088]
+collision_layer = 0
+
+[node name="Collision-CUERPO" type="CollisionShape2D" parent="cuerpo" unique_id=1233585283]
+position = Vector2(10.25, -119)
+shape = SubResource("RectangleShape2D_tgisk")
+
+[node name="cabeza" type="Area2D" parent="." unique_id=933439206]
+position = Vector2(-0.25, -1)
+collision_layer = 0
+
+[node name="Collision-CABEZA" type="CollisionShape2D" parent="cabeza" unique_id=384224951]
+position = Vector2(10.5, -135.25)
+shape = SubResource("RectangleShape2D_8wknc")
+
+[node name="Aww" type="AudioStreamPlayer" parent="." unique_id=1440100268]
+stream = ExtResource("3_ggs0p")
+volume_db = -2.563
+
+[node name="SplashDeath" type="AudioStreamPlayer" parent="." unique_id=1496039103]
+stream = ExtResource("4_hq0tv")
+volume_db = -8.789
+
+[node name="movimiento" type="CollisionShape2D" parent="." unique_id=564274546]
+position = Vector2(10, -119)
+shape = SubResource("RectangleShape2D_h33ar")
