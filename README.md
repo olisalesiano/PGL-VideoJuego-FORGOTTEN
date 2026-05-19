@@ -1,5 +1,7 @@
 # FORGOTTEN — README
 
+### **Desarrollado por:** Oliver Hernández Perluzzo
+
 Una expedición espacial rutinaria. Un cálculo mal hecho. Un asteroide en el camino equivocado.
 
 La nave queda dañada y a la deriva, y lo que es peor: una colonia de alienígenas ha tomado el control de los pasillos. El astronauta protagonista, solo y sin comunicaciones, tiene una cosa a su favor: el **sistema de control de gravedad** de la nave, manejable desde su mando remoto personal.
