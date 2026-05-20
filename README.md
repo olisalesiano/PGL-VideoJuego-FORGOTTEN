@@ -10,7 +10,7 @@ Ahora tiene que abrirse camino hasta el final de la nave, esquivar o eliminar a 
 
 ---
 
-## 🎮 Manual de usuario
+## Manual de usuario
 
 | Acción | Control |
 |---|---|
@@ -22,7 +22,7 @@ Ahora tiene que abrirse camino hasta el final de la nave, esquivar o eliminar a 
 
 ---
 
-## 🎯 Objetivo
+## Objetivo
 
 - Recoge las **3 estrellas** escondidas por la nave
 - Evita o elimina a los **alienígenas** saltando sobre su cabeza
@@ -32,7 +32,7 @@ Ahora tiene que abrirse camino hasta el final de la nave, esquivar o eliminar a 
 
 ---
 
-## ⚠️ THIRD-PARTY ASSETS & COPYRIGHT NOTICE
+## THIRD-PARTY ASSETS & COPYRIGHT NOTICE
 
 ```
 ========================================
