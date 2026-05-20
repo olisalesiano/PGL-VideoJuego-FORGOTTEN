@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://dvfeluicx21e1" path="res://assets/inicio/nueva_partida.png" id="2_aqwrv"]
 [ext_resource type="Texture2D" uid="uid://du5f0ghyixwbi" path="res://assets/inicio/nueva_partida_hover.png" id="3_cxoyd"]
 [ext_resource type="AudioStream" uid="uid://b1rruetp4xrks" path="res://assets/audio/sonido_gravedad.mp3" id="5_kt2nm"]
-[ext_resource type="AudioStream" uid="uid://bciaa6njy1foy" path="res://assets/audio/The Battle Cats - Intro Theme.mp3" id="6_w0mag"]
+[ext_resource type="AudioStream" uid="uid://p51bqwbsvwwa" path="res://assets/audio/intro.mp3" id="6_w0mag"]
 
 [node name="menu_inicio" type="Node2D" unique_id=1521720298]
 script = ExtResource("1_cxoyd")
@@ -43,8 +43,9 @@ texture = ExtResource("3_cxoyd")
 
 [node name="SonidoGravedad" type="AudioStreamPlayer" parent="." unique_id=1007629499]
 stream = ExtResource("5_kt2nm")
+volume_db = 6.5
 
-[node name="TheBattleCatsIntroTheme" type="AudioStreamPlayer" parent="." unique_id=480764602]
+[node name="Intro" type="AudioStreamPlayer" parent="." unique_id=1263534266]
 stream = ExtResource("6_w0mag")
 autoplay = true
 

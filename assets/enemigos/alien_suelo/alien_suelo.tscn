@@ -64,11 +64,11 @@ shape = SubResource("RectangleShape2D_8wknc")
 
 [node name="Aww" type="AudioStreamPlayer" parent="." unique_id=1440100268]
 stream = ExtResource("3_ggs0p")
-volume_db = -2.563
+volume_db = -5.0
 
 [node name="SplashDeath" type="AudioStreamPlayer" parent="." unique_id=1496039103]
 stream = ExtResource("4_hq0tv")
-volume_db = -8.789
+volume_db = -12.0
 
 [node name="movimiento" type="CollisionShape2D" parent="." unique_id=564274546]
 position = Vector2(10, -119)

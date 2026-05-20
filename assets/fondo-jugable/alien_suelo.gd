@@ -47,9 +47,9 @@ func _on_cabeza_body_entered(body: Node) -> void:
 		body.velocity.y = 200.0 if invertido else -200.0
 
 func _morir() -> void:
+	cuerpo.queue_free()
+	cabeza.queue_free()
 	set_physics_process(false)
-	cuerpo.get_node("Collision-CUERPO").disabled = true
-	cabeza.get_node("Collision-CABEZA").disabled = true
 	anim.visible = false
 	sonido_muerte.play()
 	await get_tree().create_timer(0.5).timeout

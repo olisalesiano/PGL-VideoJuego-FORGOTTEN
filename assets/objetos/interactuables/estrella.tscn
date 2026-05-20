@@ -21,3 +21,4 @@ shape = SubResource("CircleShape2D_sxuoe")
 
 [node name="EstrellaSonido" type="AudioStreamPlayer" parent="." unique_id=1679537183]
 stream = ExtResource("3_bkh6m")
+volume_db = -5.0

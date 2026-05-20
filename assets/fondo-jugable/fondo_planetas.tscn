@@ -276,7 +276,7 @@ metadata/_edit_lock_ = true
 
 [node name="SonidoGravedad" type="AudioStreamPlayer" parent="jugador" unique_id=266589403]
 stream = ExtResource("4_tccfi")
-volume_db = 5.859
+volume_db = 4.5
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="jugador" unique_id=127275790]
 position = Vector2(-465, 250)
@@ -293,7 +293,7 @@ metadata/_edit_lock_ = true
 
 [node name="SonidoMuerte" type="AudioStreamPlayer" parent="jugador" unique_id=490258410]
 stream = ExtResource("8_sxuoe")
-volume_db = 15.0
+volume_db = 14.0
 
 [node name="efecto-comienzo" type="CanvasLayer" parent="." unique_id=1630622648]
 layer = 10
@@ -471,12 +471,15 @@ texture = ExtResource("9_4w372")
 [node name="enemigo" type="StaticBody2D" parent="." unique_id=1665753785]
 
 [node name="alien_suelo" parent="enemigo" unique_id=364961260 instance=ExtResource("19_w5bny")]
+invertido = null
 
 [node name="alien_suelo2" parent="enemigo" unique_id=1727531947 instance=ExtResource("19_w5bny")]
 position = Vector2(210, 362)
+invertido = null
 
 [node name="alien_suelo3" parent="enemigo" unique_id=491504420 instance=ExtResource("19_w5bny")]
 position = Vector2(-475, -62)
+invertido = null
 
 [node name="alien_suelo4" parent="enemigo" unique_id=1615525418 instance=ExtResource("19_w5bny")]
 position = Vector2(261, -149)

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dv40trmuslgfl" path="res://victoria.gd" id="1_58qoj"]
 [ext_resource type="Texture2D" uid="uid://dpapdgwqu2kdn" path="res://assets/objetos/interactuables/estrella.png" id="2_fty84"]
+[ext_resource type="AudioStream" uid="uid://bwyiuswjrc277" path="res://assets/audio/yay.mp3" id="3_fty84"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_tvgrv"]
 font_size = 150
@@ -68,3 +69,6 @@ offset_top = 547.0
 offset_right = 708.0
 offset_bottom = 618.0
 text = "REINICIAR"
+
+[node name="Yay" type="AudioStreamPlayer" parent="." unique_id=437471906]
+stream = ExtResource("3_fty84")

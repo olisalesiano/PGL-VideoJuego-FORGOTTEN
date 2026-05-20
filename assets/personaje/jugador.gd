@@ -4,7 +4,7 @@ const GRAVEDAD_TIERRA = 450.0
 const GRAVEDAD_LUNA = 100.0
 const JUMP_VELOCITY = -250.0
 const IMPULSO_GRAVEDAD = -120.0
-const COOLDOWN_TIEMPO = 3.0
+const COOLDOWN_TIEMPO = 2.0
 var intro_activa := true
 var pos_destino_x := 0.0
 var gravity_inverted := false
@@ -115,6 +115,7 @@ func _cambiar_fondo() -> void:
 	nave.visible = not gravity_inverted
 	nave_morado.visible = gravity_inverted
 func morir() -> void:
+	GameState.estrellas_recogidas = 0
 	get_node("/root/Node2D/Soundtrack").stop()
 	sonido_muerte_jugador.play()
 	if muriendo:
